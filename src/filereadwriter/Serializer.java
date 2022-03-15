@@ -23,7 +23,7 @@ import java.util.HashSet;
  */
 public class Serializer implements IGateway, PropertyChangeListener {
 
-    String directory = "phase2/";
+    String directory = "";
 
     // save paths
     String userFilePath = directory + "savefiles/Users.ser";
