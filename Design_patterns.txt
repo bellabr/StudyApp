@@ -1,0 +1,52 @@
+Factory
+    - TemplateFactory
+        The TemplateFactory takes the template type as a String, along with template information in a list, and
+        creates and returns instances of one of the Template subclasses (FlashCardTemplate, QuizTemplate,
+        SortingTemplate), encapsulating the template creation, hence abstracting the process. This adheres to the
+        Single Responsibility Principle (since TemplateFactory now has the responsibility of template creation)
+        and the Open/Closed Principle (since adding new Template subclasses is simple to add to a TemplateFactory for
+        creation).
+    - AnswerCheckerFactory
+        See also AnswerChecker under Strategy. The AnswerCheckerFactory creates and returns an instance of the interface
+            AnswerChecker based on TemplateType.
+Observer
+    - Serializer observes LogInManagementSystem while loading and saving
+        Made LogInManagementSystem an observable by having a PropertyChangeSupport variable, and Serializer an observer
+            by having it implement PropertyChangeListener. Then implementing necessary methods.
+        Launching triggers loading, quitting triggers saving, and by using an observer pattern, we can make sure the
+            LoginManagementSystem knows as little about Serializer as possible.
+    - UserHandlingManagementSystem observes LogInManagementSystem to update freezing of study tools whenever the
+    game is loaded in and records logins
+        Why did you use it ?
+            We had to implement a feature where admin users could choose to set the program so that all study tools of
+            users who have been inactive for x number of days (as chosen by the admin user) would not be displayed to
+            other users until the said user has logged back on. The observer design pattern seemed useful for
+            recording log ins of users and refreshing/loading the frozen status of study tools to determine what
+            users' study tools are accessible or not without creating interdependencies.
+
+            Using the observer design pattern encapsulates the implementation of UHMS from LMS. It adheres to the
+            Single Responsibility Principle since the action (a log in) and the reactions (updating study tools
+            and recording the log in) should not be in the same class, or that class has too many responsibilities.
+            It adheres to the Open/Closed Principle since we can very easily add other observers to respond to the
+            same event simply by getting them to implement PropertyChangeListener (and as such, the propertyChange
+            method) and adding them to the list of observers for LMS. Additionally, it is easy to add a line
+            saying notifyObservers() for other events if we want to let UHMS know when other events occur.
+        How ?
+            An instance of LogInManagementSystem (LMS) is an observable by having the PropertyChangeSupport variable,
+            and an instance of UserHandlingManagementSystem (UHMS) is an observer by implementing PropertyChangeListener
+            and being added to LMS' list of observers.
+            Successful log in/account creation of a user notifies observers of the "logIn" event. The UHMS has
+            propertyChange implemented, which is called upon events by LMS. On every log in, UHMS calls the
+            user manager to record the last date of log in for this user, and updates the status of study tools
+            to be frozen or not according to the current date and system settings.
+            The "load" event also triggers the UHMS to refresh the updating of frozen study tool status to ensure
+            users can continue using the program with the appropriate study tools presented to them as time goes on.
+Strategy
+    - AnswerChecker
+        For instance, multiple choice and exact answer quizzes differ when checking answer format and checking if answer is correct.
+        Therefore, we created an interface called AnswerChecker that has two methods: checkAnswerFormat and checkCorrectness.
+        MultipleChoiceAnswerChecker and ExactAnswerChecker both implement AnswerChecker.
+        Each checks the format and correctness of the answer according to their respective specifications.
+        Store AnswerChecker as a variable inside the StudyTool object.
+        When creating a study tool, the AnswerCheckerFactory will create the correct AnswerChecker (based on template) to pass to the StudyTool constructor.
+        This avoids the situation where we must create different StudyTool objects that just differ in answer checking.
