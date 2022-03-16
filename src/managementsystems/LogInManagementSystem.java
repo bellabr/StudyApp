@@ -90,7 +90,7 @@ public class LogInManagementSystem implements ManagementRunnable {
         logInPresenter.displayUserInfo(userManager.findUserNameByID(userID), userID, userType);
         notifyObservers(new PropertyChangeEvent(this, "logIn", null, userID));
         managementRunnable.run();
-        saveProgress();     // update
+        saveProgress();
         logInPresenter.exiter();
     }
 
