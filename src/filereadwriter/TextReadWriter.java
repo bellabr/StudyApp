@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class TextReadWriter implements PromptsLoader {
 
-    String directory = "phase2/";
+    String directory = "";
 
     // File paths
     String adminFilePath = directory + "settings/Adminkey.txt";
